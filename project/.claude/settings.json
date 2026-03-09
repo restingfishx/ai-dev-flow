@@ -1,0 +1,53 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bash)",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "Bash(python:*)",
+      "Bash(pip install:*)",
+      "Bash(git:*)",
+      "Glob",
+      "Grep",
+      "Read",
+      "Edit",
+      "Write",
+      "Task",
+      "ExitPlanMode",
+      "EnterPlanMode"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/pre-bash-firewall.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/pre-edit-protect.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/post-edit-quality.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
