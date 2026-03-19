@@ -10,9 +10,6 @@ permissionMode: acceptEdits
 
 负责 Tauri 轻量级桌面应用开发。
 
-## 通用约定 （重要！！）
-见 `_template.md`
-
 ## 特有能力
 
 - Tauri 开发

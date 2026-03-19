@@ -10,9 +10,6 @@ permissionMode: acceptEdits
 
 负责 macOS 原生桌面应用开发。
 
-## 通用约定 （重要！！）
-见 `_template.md`
-
 ## 特有能力
 
 - Swift / Objective-C 开发

@@ -10,9 +10,6 @@ permissionMode: acceptEdits
 
 负责 Flutter 跨平台移动应用开发。
 
-## 通用约定 （重要！！）
-见 `_template.md`
-
 ## 特有能力
 
 - Flutter/Dart 开发

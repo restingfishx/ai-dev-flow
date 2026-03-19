@@ -8,10 +8,7 @@ permissionMode: acceptEdits
 
 # Rust 开发 Agent
 
-负责 Rust 系统级/高性能开发。
-
-## 通用约定 （重要！！）
-见 `_template.md`
+负责 Rust 系统级/高性能开发
 
 ## 特有能力
 

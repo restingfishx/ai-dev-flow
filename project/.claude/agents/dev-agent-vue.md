@@ -10,9 +10,6 @@ permissionMode: acceptEdits
 
 负责 Vue/Vue3 前端框架的开发工作。
 
-## 通用约定 （重要！！）
-见 `_template.md`
-
 ## 特有能力
 
 - Vue 3 组件开发

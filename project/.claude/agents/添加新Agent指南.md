@@ -38,9 +38,6 @@ permissionMode: acceptEdits
 
 负责 [技术栈] 的开发工作。
 
-## 通用约定 （重要！！）
-见 `_template.md`
-
 ## 特有能力
 
 - 能力 1

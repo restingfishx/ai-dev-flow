@@ -10,9 +10,6 @@ permissionMode: acceptEdits
 
 负责 Go 后端服务开发。
 
-## 通用约定 （重要！！）
-见 `_template.md`
-
 ## 特有能力
 
 - Go 语言开发

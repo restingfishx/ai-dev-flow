@@ -10,9 +10,6 @@ permissionMode: acceptEdits
 
 负责 React/Next.js 等前端框架的开发工作。
 
-## 通用约定 （重要！！）
-见 `_template.md`
-
 ## 特有能力
 
 - React/Next.js 组件开发
