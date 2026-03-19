@@ -40,11 +40,10 @@ if [ ! -d "$TARGET_DIR" ]; then
     mkdir -p "$TARGET_DIR"
 fi
 
-# 同步文件
+# 同步文件（覆盖更新，不删除目标目录中的其他文件）
 echo "正在同步文件..."
 rsync -av \
     "${EXCLUDE_ARGS[@]}" \
-    --delete \
     "$SOURCE_DIR/" "$TARGET_DIR/"
 
 echo ""
