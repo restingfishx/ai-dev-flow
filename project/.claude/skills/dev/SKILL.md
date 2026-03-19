@@ -121,7 +121,7 @@ prompt: |
 
   4. 重复步骤 1-3 直到全部完成
 
-  5. subagent 开发完成，退出 worktree
+  5. subagent 开发&验证完成，退出 worktree
 ```
 
 ### tech_stack 映射表
