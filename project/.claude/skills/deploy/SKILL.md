@@ -9,6 +9,8 @@ disable-model-invocation: false
 
 参数: $ARGUMENTS
 
+执行 `python .claude/lib/iteration.py check` 获取当前迭代信息。
+
 ## 阶段零：前置校验
 
 ### 必须满足的条件

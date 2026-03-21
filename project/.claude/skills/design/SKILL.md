@@ -8,9 +8,11 @@ disable-model-invocation: false
 
 ## 阶段零：前置校验
 
+执行 `python .claude/lib/iteration.py check` 获取当前迭代信息。
+
 ### 必须满足的条件
 
-1. **PRD 文档存在**：确保 PM 阶段已完成，PRD 文档已生成
+1. **PRD 文档存在**
 
 ### 校验不通过时
 
@@ -41,10 +43,10 @@ disable-model-invocation: false
 
 | 类型 | 说明 | 文件位置 |
 |------|------|----------|
-| 页面结构 | 页面清单、层级 | docs/design/pages.md |
-| 线框图 | 低保真布局 | docs/design/wireframes/ |
-| UI 规范 | 组件、配色、字体 | docs/design/ui-kit.md |
-| 交互文档 | 动效、交互流程 | docs/design/interactions.md |
+| 页面结构 | 页面清单、层级 | 执行 check 获取 |
+| 线框图 | 低保真布局 | 执行 check 获取 |
+| UI 规范 | 组件、配色、字体 | 执行 check 获取 |
+| 交互文档 | 动效、交互流程 | 执行 check 获取 |
 | 设计稿 | 高保真（可选） | Figma 链接 |
 
 ### 产出格式

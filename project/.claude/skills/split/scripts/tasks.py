@@ -7,12 +7,28 @@ import os
 from datetime import datetime
 from pathlib import Path
 
-TASKS_FILE = "tasks.json"
+# 添加 lib 目录到路径
+sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / "lib"))
+from iteration import resolve_path, get_tasks_file, is_iteration_mode, get_current_iteration
+
+# 任务文件路径（支持迭代模式）
+TASKS_FILE = get_tasks_file()
+
+# 启动时显示迭代状态
+def show_iteration_status():
+    if is_iteration_mode():
+        current = get_current_iteration()
+        print(f"[迭代模式] 当前版本: {current}")
+        print(f"[迭代模式] 任务文件: {TASKS_FILE}")
+        print()
 
 
 def load_tasks():
     """加载 tasks.json"""
     if not os.path.exists(TASKS_FILE):
+        # 尝试创建默认文件
+        if is_iteration_mode():
+            return {"version": "1.0", "generated_at": "", "tasks": []}
         return {"version": "1.0", "generated_at": "", "tasks": []}
 
     with open(TASKS_FILE, "r", encoding="utf-8") as f:
@@ -314,6 +330,9 @@ def usage():
 
 
 def main():
+    # 显示迭代状态
+    show_iteration_status()
+
     if len(sys.argv) < 2:
         usage()
         sys.exit(1)

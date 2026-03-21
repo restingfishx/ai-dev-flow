@@ -8,9 +8,11 @@ disable-model-invocation: false
 
 ## 阶段零：前置校验
 
+执行 `python .claude/lib/iteration.py check` 获取当前迭代信息。
+
 ### 必须满足的条件
 
-1. **PRD 文档存在**：`docs/prd.md` 存在
+1. **PRD 文档存在**
 
 ### 前置依赖说明
 
@@ -54,7 +56,7 @@ disable-model-invocation: false
 
 ### API 提取规则
 
-从 `docs/architecture/api.md` 中提取任务相关的 API：
+从架构文档中提取任务相关的 API（执行 check 获取实际路径）：
 - 读取完整的 API 定义
 - 根据任务描述，筛选相关的 API
 - 提取格式：`{path, method, description}`，不包含完整请求/响应结构
@@ -77,10 +79,10 @@ disable-model-invocation: false
 
 ### 目录约定（从 arch 输出读取）
 
-目录结构由架构师在 arch 阶段定义，存储在 `docs/architecture/overview.md` 中。
+目录结构由架构师在 arch 阶段定义（执行 check 获取实际路径）。
 
 split 执行时：
-1. 读取 `docs/architecture/overview.md`
+1. 读取架构文档
 2. 提取"目录结构约定"表格
 3. 使用表格中的路径作为 output
 
@@ -97,10 +99,10 @@ split 执行时：
 
 每个任务需声明依赖哪些角色的产出：
 
-| 依赖标识 | 说明 | 检查路径 |
-|----------|------|----------|
-| ARCH | 技术架构、API 定义 | `docs/architecture/` 目录 |
-| DESIGN | 界面设计稿、交互文档 | `docs/design/` 目录 |
+| 依赖标识 | 说明 |
+|----------|------|
+| ARCH | 技术架构、API 定义 |
+| DESIGN | 界面设计稿、交互文档 |
 
 #### 架构文件细分
 
@@ -242,6 +244,8 @@ python .claude/skills/split/scripts/tasks.py status
 python .claude/skills/split/scripts/tasks.py get TASK-001
 ```
 
+> **路径说明**：执行 `python .claude/lib/iteration.py check` 获取任务清单路径
+
 ### tasks.json 格式
 
 ```json
@@ -273,7 +277,7 @@ python .claude/skills/split/scripts/tasks.py get TASK-001
 }
 ```
 
-> **Token 优化**：`relevant_apis` 字段只在 tasks.json 中存储任务涉及的 API 摘要（路径、方法、描述），不包含完整定义。完整 API 定义在 `docs/architecture/api.md` 中，由 Subagent 按需读取。
+> **Token 优化**：`relevant_apis` 只存储 API 摘要，完整定义在架构文档中
 
 ### 任务状态说明
 

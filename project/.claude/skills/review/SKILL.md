@@ -15,6 +15,8 @@ disable-model-invocation: false
 - `/review TASK-001 通过`
 - `/review TASK-001 不通过 代码有安全漏洞`
 
+执行 `python .claude/lib/iteration.py check` 获取当前迭代信息。
+
 ## 阶段零：前置校验
 
 ### 必须满足的条件

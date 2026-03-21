@@ -61,7 +61,7 @@ prd模板：@references/prd_templates.md。
 
 根据收集的信息，使用模板生成 PRD 文件。
 
-- **输出路径**：`docs/prd.md`
+- **输出路径**：执行 `python .claude/lib/iteration.py check` 获取
 
 ---
 

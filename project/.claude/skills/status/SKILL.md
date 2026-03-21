@@ -9,6 +9,8 @@ argument-hint: "[task-id]"
 
 参数: $ARGUMENTS
 
+执行 `python .claude/lib/iteration.py check` 获取当前迭代信息。
+
 ## 阶段一：读取任务清单
 
 使用脚本查看任务状态：
@@ -40,9 +42,10 @@ python .claude/skills/split/scripts/tasks.py get TASK-001
 
 ### 检查依赖产出
 
-检查以下目录是否存在：
-- `docs/design/` - DESIGN 产出
-- `docs/architecture/` - ARCH 产出
+使用 iteration 模块动态检查目录：
+```bash
+python .claude/lib/iteration.py check
+```
 
 ## 阶段三：输出状态报告
 
@@ -107,4 +110,4 @@ python .claude/skills/split/scripts/tasks.py get TASK-001
 
 - 任务状态为 `pending_design` 时，告诉用户可以先开发后端任务
 - 任务状态为 `pending_arch` 时，告诉用户 ARCH 尚未完成
-- 运行 `python tasks.py unlock` 查看任务依赖状态
+- 运行 `python tasks.py unlock` 查看任务依赖状态（脚本会自动解析迭代路径）

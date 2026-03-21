@@ -5,8 +5,22 @@ import json
 import sys
 import os
 from datetime import datetime
+from pathlib import Path
 
-SUBTASKS_DIR = "subtasks"
+# 添加 lib 目录到路径
+sys.path.insert(0, str(Path(__file__).parent.parent.parent / "lib"))
+from iteration import resolve_path, get_subtasks_dir, is_iteration_mode, get_current_iteration
+
+# subtasks 目录（支持迭代模式）
+SUBTASKS_DIR = get_subtasks_dir()
+
+# 启动时显示迭代状态
+def show_iteration_status():
+    if is_iteration_mode():
+        current = get_current_iteration()
+        print(f"[迭代模式] 当前版本: {current}")
+        print(f"[迭代模式] 子任务目录: {SUBTASKS_DIR}")
+        print()
 
 
 def ensure_dir():
@@ -265,6 +279,9 @@ def usage():
 
 
 def main():
+    # 显示迭代状态
+    show_iteration_status()
+
     if len(sys.argv) < 2:
         usage()
         sys.exit(1)

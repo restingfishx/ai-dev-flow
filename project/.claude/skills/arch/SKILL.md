@@ -8,9 +8,11 @@ disable-model-invocation: false
 
 ## 阶段零：前置校验
 
+执行 `python .claude/lib/iteration.py check` 获取当前迭代信息。
+
 ### 必须满足的条件
 
-1. **PRD 文档存在**：确保 PM 阶段已完成，PRD 文档已生成
+1. **PRD 文档存在**：检查上一步输出的 PRD
 
 ### 校验不通过时
 
@@ -24,7 +26,7 @@ disable-model-invocation: false
 
 ## 阶段二：架构设计
 
-产出目录结构 `docs/architecture/`：
+产出目录结构（执行 `python .claude/lib/iteration.py check` 获取实际路径）：
 
 ```
 docs/architecture/

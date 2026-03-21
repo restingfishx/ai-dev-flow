@@ -9,6 +9,8 @@ disable-model-invocation: false
 
 参数: $ARGUMENTS
 
+执行 `python .claude/lib/iteration.py check` 获取当前迭代信息。
+
 ## 前置校验
 
 | 步骤 | 命令 | 说明 |
@@ -32,96 +34,44 @@ disable-model-invocation: false
 
 | 状态 | 处理 |
 |------|------|
-| pending | 创建 worktree 并进入：`git worktree add worktrees/<task-id> release && cd worktrees/<task-id>` |
-| pending_fix | 进入 worktree：`cd worktrees/<task-id>`，获取迭代反馈（从 tasks.json 的 iterations 字段获取最后一次审核不通过的原因） |
-| pending_design/pending_arch | 检查 docs/design/ 或 docs/architecture/ 存在则自动解锁 |
+| pending | 创建 worktree 并进入 |
+| pending_fix | 进入 worktree，获取迭代反馈 |
+| pending_design/pending_arch | 检查相关目录存在则自动解锁 |
 
 ### 2. 依赖检查
 
-```bash
-python .claude/skills/split/scripts/tasks.py unlock
-```
-
-- 依赖已满足 → 继续
-- 依赖未满足 → 提示用户
+`python .claude/skills/split/scripts/tasks.py unlock`
 
 ### 3. 更新状态
 
-```bash
-python .claude/skills/split/scripts/tasks.py update <task-id> in_progress
-```
+`python .claude/skills/split/scripts/tasks.py update <task-id> in_progress`
 
 ---
 
 ## 调度 Subagent
 
-根据 tech_stack 选择对应的 Agent，使用 Agent 工具调用：
+根据 tech_stack 选择对应的 Agent：
 
 ```
 subagent_type: <对应的 dev-agent-xxx>
-description: 开发 <tech_stack> 任务
-prompt: |
-  ## 任务信息
-  - 任务 ID: <task-id> （格式：TASK-xxx）
-  - 主任务状态: <in_progress/pending_fix>
-  - 任务描述: <description>
-  - 验收标准: <acceptance>
-  - 输入文件: <input>
-  - 输出目录: <output>
-  - 依赖产出: <depends_on_outputs>
-  - 相关 API: <relevant_apis>
-  - 迭代反馈: <pending_fix 时填写，in_progress 时为空>
+prompt:
+  - 任务 ID、描述、验收标准
+  - 输入/输出目录
+  - 依赖产出、相关 API
+  - 迭代反馈（pending_fix 时）
 
-  ## 工作目录
-  worktrees/<task-id>/
+  工作目录：worktrees/<task-id>/
 
-  ## 你需要执行的开发流程
+  根据主任务状态判断：
+  - pending_fix：先读取反馈，理解问题
+  - in_progress + 有断点：用 progress.py current 查看，有返回则继续当前子任务
+  - in_progress + 无断点：拆分任务后执行
 
-  根据主任务状态和断点状态，判断下一步操作：
-
-  **情况一：主任务状态是 pending_fix**
-  - 任务类型：修复bug
-  - 必须执行：先读取迭代反馈，理解需要修复的问题
-  - 拆分任务后执行：
-    ```
-    python .claude/agents/scripts/progress.py create <id> "<名称>" "<描述>" "<验收标准>"
-    python .claude/agents/scripts/progress.py init <task-id> <子任务1> <子任务2> ...
-    ```
-  - 注意：init 会追加到现有子任务后面
-
-  **情况二：主任务状态是 in_progress，且有断点（subtasks/subtask-<任务编号>.json 存在）**
-  - 任务类型：断点恢复
-  - 不需要拆分任务，直接继续执行当前子任务
-
-  **情况三：主任务状态是 in_progress，且无断点**
-  - 任务类型：首次开发
-  - 拆分任务后执行：
-    ```
-    python .claude/agents/scripts/progress.py create <id> "<名称>" "<描述>" "<验收标准>"
-    python .claude/agents/scripts/progress.py init <task-id> <子任务1> <子任务2> ...
-    ```
-
-  ### 断点判断
-
-  判断是否有断点：检查 subtasks/ 目录下是否存在 subtask-xxx.json 文件（xxx是<task-id>，从TASK-xxx中取）
-
-  ## 子任务执行步骤
-
-  1. 查看当前任务：
-     ```
-     python .claude/agents/scripts/progress.py current
-     ```
-
-  2. 执行当前功能点
-
-  3. 完成当前，开始下一个：
-     ```
-     python .claude/agents/scripts/progress.py next
-     ```
-
-  4. 重复步骤 1-3 直到全部完成
-
-  5. subagent 开发&验证完成，退出 worktree
+  使用 progress.py 管理子任务：
+  - create <id> "<名称>" "<描述>" "<验收标准>"：创建子任务
+  - init <task-id> <子任务1> <子任务2> ...：初始化子任务
+  - current：查看当前任务
+  - next：完成当前，开始下一个
 ```
 
 ### tech_stack 映射表
@@ -148,18 +98,9 @@ prompt: |
 
 ---
 
-## 更新状态并验证
+## 更新状态
 
-1. 更新状态为 pending_review：
-   ```bash
-   cd worktrees/<task-id>
-   python .claude/skills/split/scripts/tasks.py update <task-id> pending_review
-   python .claude/skills/split/scripts/tasks.py iter <task-id> <agent> "待审核" ""
-   ```
-
-2. 启动项目验证（从 docs/architecture/overview.md 读取启动命令）
-
-3. 用户确认后，提示：请执行 /review <task-id> 通过/不通过
+开发完成后，更新状态为 pending_review。
 
 ---
 

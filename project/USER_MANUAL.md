@@ -56,6 +56,8 @@ DEPLOY 阶段
 
 输入需求描述，系统自动生成 PRD 文档。
 
+**输出路径**：`docs/prd.md`（迭代模式下为 `{version}/docs/prd.md`）
+
 ---
 
 ### ARCH - 架构设计
@@ -67,6 +69,8 @@ DEPLOY 阶段
 输入技术选型需求，系统生成架构文档。
 
 **依赖**：需要先完成 PM 阶段。
+
+**输出路径**：`docs/architecture/`（迭代模式下为 `{version}/docs/architecture/`）
 
 ---
 
@@ -80,6 +84,8 @@ DEPLOY 阶段
 
 **依赖**：需要先完成 PM 阶段。
 
+**输出路径**：`docs/design/`（迭代模式下为 `{version}/docs/design/`）
+
 ---
 
 ### SPLIT - 任务拆分
@@ -89,6 +95,8 @@ DEPLOY 阶段
 ```
 
 基于 PRD + 架构/设计文档，生成任务清单（tasks.json）。
+
+**输出路径**：`tasks.json`（迭代模式下为 `{version}/tasks.json`）
 
 ---
 
@@ -137,6 +145,45 @@ DEPLOY 阶段
 
 ---
 
+## 迭代模式（可选）
+
+### 概述
+
+迭代模式支持管理项目的多个版本，每个版本有独立的文档和任务清单。
+
+### 使用场景
+
+- 需要分多个版本发布功能
+- 希望在当前迭代完成后才开始下一个迭代
+- 需要保留每个迭代的完整工作记录
+
+### 创建迭代
+
+```bash
+/iteration create v1.0     # 创建首个迭代
+/iteration create v1.1     # 基于 v1.0 创建 v1.1
+```
+
+### 管理迭代
+
+```bash
+/iteration list            # 列出所有迭代
+/iteration switch v1.0     # 切换到 v1.0
+/iteration complete v1.0  # 完成迭代
+/iteration status          # 查看当前状态
+```
+
+### 路径规则
+
+| 类型 | 路径 | 说明 |
+|------|------|------|
+| 迭代目录 | `v1.0/`, `v1.1/` | 各迭代独立目录 |
+| 文档 | `docs/prd.md` | 自动解析到当前迭代 |
+| 任务清单 | `tasks.json` | 自动解析到当前迭代 |
+| 根目录 | `worktrees/`, `.git/` | 不受迭代影响 |
+
+---
+
 ## 任务状态说明
 
 | 状态 | 说明 | 如何处理 |
@@ -158,15 +205,23 @@ DEPLOY 阶段
 
 ```
 project/
-├── docs/                    # 项目文档
-│   ├── prd.md             # 需求文档
-│   ├── architecture/       # 架构文档
-│   └── design/            # 设计文档
+├── v1.0/                    # 迭代目录（启用迭代模式时）
+│   ├── docs/
+│   │   ├── prd.md
+│   │   ├── architecture/
+│   │   └── design/
+│   ├── tasks.json
+│   └── subtasks/
+├── docs/                    # 文档（未启用迭代模式时）
+│   ├── prd.md
+│   ├── architecture/
+│   └── design/
+├── tasks.json               # 任务清单（未启用迭代模式时）
 ├── frontend/                # 前端代码
 ├── backend/                 # 后端代码
-├── ios/                    # iOS 代码
-├── android/                # Android 代码
-└── worktrees/              # Git Worktree 目录
+├── ios/                     # iOS 代码
+├── android/                 # Android 代码
+└── worktrees/               # Git Worktree 目录（不受迭代影响）
     ├── task-001/          # TASK-001 开发目录
     └── task-002/          # TASK-002 开发目录
 ```
@@ -197,12 +252,12 @@ project/
 
 ```bash
 # 终端 1 - 开发 TASK-001
-git worktree add worktrees/task-001 main
+git worktree add worktrees/task-001 release
 cd worktrees/task-001
 # 启动 Claude Code 开发
 
 # 终端 2 - 开发 TASK-002
-git worktree add worktrees/task-002 main
+git worktree add worktrees/task-002 release
 cd worktrees/task-002
 # 启动 Claude Code 开发
 ```
@@ -236,10 +291,23 @@ git worktree remove worktrees/task-001
 
 使用 Worktree：
 ```bash
-git worktree add worktrees/task-001 main
-git worktree add worktrees/task-002 main
+git worktree add worktrees/task-001 release
+git worktree add worktrees/task-002 release
 ```
 然后在各自目录启动 Claude Code。
+
+### Q4：如何使用迭代模式？
+
+```bash
+/iteration create v1.0     # 创建首个迭代
+# 然后正常执行各阶段
+/pm
+/arch
+/split
+/dev TASK-001
+# 完成当前迭代后创建新迭代
+/iteration create v1.1
+```
 
 ---
 
@@ -265,3 +333,4 @@ gh pr view 1
 1. **每阶段确认后再继续**：不要跳过审核直接进入下一阶段
 2. **及时处理反馈**：收到审核反馈后尽快修复
 3. **及时告知审核结果**：PR 审核完成后告诉 Claude 结果
+4. **迭代模式**：大型项目建议使用迭代模式管理多个版本
